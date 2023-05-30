@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface Task {
+export interface Task {
 	id: string;
 	text?: string;
 	checked: boolean;
@@ -28,9 +28,6 @@ const formSlice = createSlice({
 				taskToUpdate.checked = checked;
 			}
 		},
-		updateTasks: (state, action: PayloadAction<Task[]>) => {
-			state.tasks = action.payload;
-		},
 		deleteTask: (state, action: PayloadAction<string>) => {
 			const taskId = action.payload;
 			state.tasks = state.tasks.filter((task) => task.id !== taskId);
@@ -38,5 +35,5 @@ const formSlice = createSlice({
 	},
 });
 
-export const { createTask, updateTask, updateTasks, deleteTask } = formSlice.actions;
+export const { createTask, updateTask, deleteTask } = formSlice.actions;
 export default formSlice.reducer;

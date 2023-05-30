@@ -17,13 +17,11 @@ const FilterComponent: React.FC<FilterComponentProps> = ({ onFilter }) => {
 	};
 
 	const handleShowDoneClick = () => {
-		console.log('ShowDone Click');
 		setShowDone(false);
 		onFilter(filterText, false);
 	};
 
 	const handleShowAllClick = () => {
-		console.log('ShowAll Click');
 		setShowDone(true);
 		onFilter(filterText, true);
 	};

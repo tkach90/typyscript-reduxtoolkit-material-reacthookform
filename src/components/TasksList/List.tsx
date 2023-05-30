@@ -1,15 +1,32 @@
 import React, { ChangeEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { List, ListItem, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Menu, MenuItem } from '@mui/material';
+import { List, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Menu, MenuItem } from '@mui/material';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
-import { updateTask, updateTasks, deleteTask } from '../../store/formSlice';
+import { updateTask, deleteTask } from '../../store/formSlice';
 import { RootState } from '../../store/rootReducer';
 import CustomCheckbox from '../ui/Checkbox/Checkbox';
 import { ListItemChecked } from './List.types';
+import { Task } from '../../store/formSlice';
 import { StyledListItem, StyledListItemText, DeleteIcon } from './List.styles';
 import GeneralButton from "../ui/Button/Button";
 import FilterComponent from "../Filter/Filter";
 
+
+const sortTasks = (tasks: Array<Task>) => {
+	if ( !Array.isArray(tasks) ) {
+		throw new Error('tasks is not array');
+	}
+
+	return tasks.sort((a, b) => {
+		if (a.checked && !b.checked) {
+			return 1;
+		}
+		if (!a.checked && b.checked) {
+			return -1;
+		}
+		return 0;
+	});
+}
 
 const TaskList: React.FC = () => {
 	const dispatch = useDispatch();
@@ -47,25 +64,6 @@ const TaskList: React.FC = () => {
 		const { checked } = event.target;
 
 		dispatch(updateTask({ id: data.id, checked }));
-
-		const updatedTasks = tasks.map((task) => {
-			if (task.id === data.id) {
-				return { ...task, checked };
-			}
-			return task;
-		});
-
-		updatedTasks.sort((a, b) => {
-			if (a.checked && !b.checked) {
-				return 1;
-			}
-			if (!a.checked && b.checked) {
-				return -1;
-			}
-			return 0;
-		});
-
-		dispatch(updateTasks(updatedTasks));
 	};
 
 	const handleFilter = (filterText: string, showDone: boolean) => {
@@ -86,7 +84,7 @@ const TaskList: React.FC = () => {
 				<p>No tasks found.</p>
 			) : (
 				<List>
-					{filteredTasks.map((task) => (
+					{sortTasks(filteredTasks).map((task) => (
 						<StyledListItem key={task.id}>
 							<CustomCheckbox
 								onChange={(event) => handleChange(event, task)}
